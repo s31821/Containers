@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using Containers.Application;
 using Containers.Models;
 
@@ -37,14 +38,36 @@ app.MapGet("/api/containers", (IContainerService containerService) =>
 
 app.MapPost("/api/containers", (IContainerService containerService, Container container) =>
 {
-    bool result = containerService.CreateContainer(container);
-    if (result)
+    try
     {
-        return Results.Created();
+        bool result = containerService.CreateContainer(container);
+        if (result)
+        {
+            return Results.Created();
+        }
+        else
+        {
+            return Results.BadRequest();
+        }
     }
-    else
+    catch (Exception e)
     {
-        return Results.Problem();
+        return Results.Problem(e.Message);
+    }
+});
+
+app.MapPost("/api/containers", async (IContainerService containerService, HttpRequest request) =>
+{
+    using (var reader = new StreamReader(request.Body))
+    {
+        string rawJson = await reader.ReadToEndAsync();
+
+        var json = JsonNode.Parse(rawJson);
+        var specifiedType = json["type"];
+        if (specifiedType != null && specifiedType.ToString() == "Standard")
+        {
+
+        }
     }
 });
 
