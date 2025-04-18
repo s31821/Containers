@@ -8,7 +8,7 @@ GO
 CREATE TABLE Containers (
                             ID INT PRIMARY KEY IDENTITY(1,1),
                             ContainerTypeId INT NOT NULL,
-                            IsHazardious BIT NOT NULL,
+                            IsHazardous BIT NOT NULL,
                             Name NVARCHAR(100) NOT NULL,
                             FOREIGN KEY (ContainerTypeId) REFERENCES ContainerType(ID)
 );
